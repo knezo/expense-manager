@@ -504,11 +504,6 @@ Item {
 
     }
 
-    Connections{
-        target: backend
-
-    }
-
     function setTotalValue(){
         var hrkSum = sumCheckedSubscriptions()
         switch(comboBoxSumCurrency.displayText){

@@ -481,11 +481,6 @@ Item {
 
     }
 
-    Connections{
-        target: backend
-
-    }
-
     function calculateSum(){
         var hrkSum = 0
         for (var i = 0; i < listModel.rowCount(); i ++) {
