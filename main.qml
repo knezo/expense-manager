@@ -12,9 +12,11 @@ Window {
 
     Rectangle {
         id: bg
-        anchors.fill: parent
-        anchors.rightMargin: 0
-        anchors.leftMargin: 0
+        anchors {
+            fill: parent;
+            rightMargin: 0;
+            leftMargin: 0
+        }
 
         Rectangle {
             id: menu
@@ -43,11 +45,8 @@ Window {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 wrapMode: Text.WordWrap
-                font.family: "Arial"
                 font.bold: true
-                fontSizeMode: Text.FixedSize
-                minimumPointSize: 17
-                minimumPixelSize: 15
+
             }
 
             Button {
@@ -62,11 +61,6 @@ Window {
                     leftMargin: 8
                 }
                 font.bold: true
-                transformOrigin: Item.Center
-                checkable: false
-                autoRepeat: false
-                flat: false
-                highlighted: false
 
                 onClicked: stackView.push(Qt.resolvedUrl("pages/accounts.qml"))
             }
