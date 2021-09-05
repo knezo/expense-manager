@@ -12,7 +12,6 @@ Window {
 
     Rectangle {
         id: bg
-        color: "#3b3b3b"
         anchors.fill: parent
         anchors.rightMargin: 0
         anchors.leftMargin: 0
@@ -20,22 +19,26 @@ Window {
         Rectangle {
             id: menu
             width: 135
-            color: "#606060"
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.leftMargin: 0
-            anchors.topMargin: 0
-            anchors.bottomMargin: 0
+            color: "dimgrey"
+            anchors {
+                left: parent.left;
+                top: parent.top;
+                bottom: parent.bottom;
+                leftMargin: 0;
+                topMargin: 0;
+                bottomMargin: 0
+            }
 
             Text {
                 id: textTitle
-                x: 8
-                y: 8
                 width: 119
                 height: 67
-                color: "#f7f7f7"
+                color: "white"
                 text: qsTr("Expense manager")
+                anchors {
+                    top: parent.top;
+                    topMargin: 8
+                }
                 font.pixelSize: 20
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
@@ -49,43 +52,53 @@ Window {
 
             Button {
                 id: btnAccounts
-                y: 89
                 text: qsTr("Accounts")
-                anchors.left: parent.left
-                anchors.right: parent.right
+                anchors {
+                    left: parent.left;
+                    right: parent.right;
+                    top: textTitle.bottom;
+                    topMargin: 16;
+                    rightMargin: 8;
+                    leftMargin: 8
+                }
                 font.bold: true
                 transformOrigin: Item.Center
                 checkable: false
                 autoRepeat: false
                 flat: false
                 highlighted: false
-                anchors.rightMargin: 8
-                anchors.leftMargin: 8
+
                 onClicked: stackView.push(Qt.resolvedUrl("pages/accounts.qml"))
             }
 
             Button {
                 id: btnSubs
-                y: 146
                 text: qsTr("Subscriptions")
-                anchors.left: parent.left
-                anchors.right: parent.right
+                anchors {
+                    left: parent.left;
+                    right: parent.right;
+                    top: btnAccounts.bottom;
+                    topMargin: 16;
+                    rightMargin: 8;
+                    leftMargin: 8
+                }
                 font.bold: true
-                anchors.rightMargin: 8
-                anchors.leftMargin: 8
+
                 onClicked: stackView.push(Qt.resolvedUrl("pages/subs.qml"))
             }
 
             Button {
                 id: btnExit
-                y: 656
                 text: qsTr("Exit")
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 24
-                anchors.rightMargin: 20
-                anchors.leftMargin: 20
+                anchors {
+                    left: parent.left;
+                    right: parent.right;
+                    bottom: parent.bottom;
+                    bottomMargin: 24;
+                    rightMargin: 20;
+                    leftMargin: 20
+                }
+
                 onClicked: {
                     Qt.quit()
                 }
@@ -95,16 +108,18 @@ Window {
 
         Rectangle {
             id: content
-            color: "#00000000"
-            anchors.left: menu.right
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
+            color: "transparent"
+            anchors {
+                left: menu.right;
+                right: parent.right;
+                top: parent.top;
+                bottom: parent.bottom;
+                topMargin: 0;
+                rightMargin: 0;
+                leftMargin: 0;
+                bottomMargin: 0
+            }
             clip: true
-            anchors.rightMargin: 0
-            anchors.leftMargin: 0
-            anchors.bottomMargin: 0
-            anchors.topMargin: 0
 
             StackView {
                 id: stackView
@@ -119,6 +134,6 @@ Window {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.75}D{i:4}D{i:5}D{i:6}D{i:2}D{i:8}D{i:7}
+    D{i:0;formeditorZoom:0.75}D{i:3}D{i:4}D{i:5}
 }
 ##^##*/

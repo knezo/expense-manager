@@ -5,19 +5,29 @@ import QtQuick.LocalStorage 2.15
 Item {
     Rectangle {
         id: bg
-        color: "#424242"
-        anchors.fill: parent
-        anchors.rightMargin: 0
-        anchors.bottomMargin: 0
-        anchors.leftMargin: 0
-        anchors.topMargin: 0
+        color: darkgrey
+
+        anchors {
+            fill: parent;
+            rightMargin: 0;
+            bottomMargin: 0;
+            leftMargin: 0;
+            topMargin: 0
+        }
+
+        property color darkgrey: "#424242"
 
         Rectangle {
             id: rectangleAdd
             height: 87
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
+            anchors {
+                left: parent.left;
+                top: parent.top;
+                right: parent.right;
+                leftMargin: 0;
+                topMargin: 0;
+                rightMargin: 0
+            }
             gradient: Gradient {
                 GradientStop {
                     position: 0
@@ -29,20 +39,19 @@ Item {
                     color: "#ff039284"
                 }
             }
-            anchors.leftMargin: 0
-            anchors.rightMargin: 0
-            anchors.topMargin: 0
 
             Rectangle {
                 id: rectangleAddTitle
                 height: 20
-                color: "#00000000"
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.leftMargin: 0
-                anchors.topMargin: 4
-                anchors.rightMargin: 0
+                color: "transparent"
+                anchors {
+                    left: parent.left;
+                    top: parent.top;
+                    right: parent.right;
+                    leftMargin: 0;
+                    topMargin: 4;
+                    rightMargin: 0
+                }
 
                 Text {
                     id: text1
@@ -61,7 +70,7 @@ Item {
                 x: 209
                 width: parent.width*0.98
                 height: 1
-                color: "#424242"
+                color: bg.darkgrey
                 anchors.top: rectangleAddTitle.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.topMargin: 2
@@ -70,18 +79,18 @@ Item {
             Rectangle {
                 id: rectangleAddValue
                 height: 60
-                color: "#00000000"
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: divider.bottom
-                anchors.topMargin: 0
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
+                color: "transparent"
+                anchors {
+                    left: parent.left;
+                    top: divider.bottom;
+                    right: parent.right;
+                    leftMargin: 0;
+                    topMargin: 0;
+                    rightMargin: 0
+                }
 
                 TextField {
                     id: textAccount
-                    x: 8
-                    y: 10
                     width: parent.width*0.3
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
@@ -90,53 +99,63 @@ Item {
                     placeholderText: qsTr("Account name")
                 }
 
-                TextField {
-                    id: textValue
-                    x: 216
-                    y: 10
+                SpinBox {
+                    id: spinboxValue
                     width: parent.width*0.3
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: textAccount.right
-                    anchors.leftMargin: 16
-                    placeholderText: qsTr("Amount")
-                    inputMethodHints: Qt.ImhHiddenText
+                    anchors {
+                        left: textAccount.right;
+                        leftMargin: 16;
+                        verticalCenter: parent.verticalCenter
+                    }
+                    editable: true
+                    from: -999999999
+                    to: 999999999
+                    stepSize: 10000
+
+                    property int decimals: 2
+
+                    textFromValue: function(value, locale) {
+                        return Number(value / 100).toLocaleString(locale, 'f', spinboxValue.decimals)
+                    }
+
+                    valueFromText: function(text, locale) {
+                        return Number.fromLocaleString(locale, text) * 100
+                    }
                 }
 
                 ComboBox {
                     id: comboBoxCurrency
-                    x: 424
-                    y: 17
                     width: parent.width*0.15
                     height: 30
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: textValue.right
-                    anchors.leftMargin: 16
-                    model: ["hrk", "eur", "gbp"]
+                    anchors {
+                        left: spinboxValue.right;
+                        leftMargin: 16;
+                        verticalCenter: parent.verticalCenter
+                    }
+                    model: ["HRK", "EUR", "GBP"]
                 }
 
                 RoundButton {
                     id: roundButton
-                    x: 575
-                    y: 10
                     height: 40
                     text: "+"
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
+                    anchors {
+                        right: parent.right;
+                        rightMargin: 25;
+                        verticalCenter: parent.verticalCenter
+                    }
                     topPadding: 3
                     autoExclusive: false
                     display: AbstractButton.TextBesideIcon
                     font.bold: false
                     font.pointSize: 20
-                    anchors.rightMargin: 25
 
                     onClicked: {
                         var name = textAccount.text
-                        var amount = Math.round(parseFloat(textValue.text)*100)/100
+                        var amount = spinboxValue.value/100
                         var currency = comboBoxCurrency.displayText
 
-                        if(isNaN(amount)){
-                            return
-                        }
+                        console.log(amount)
 
                         listModel.append({accountID: Date.now(),name: name, amount: amount, currency: currency})
                         setTotalValue()
@@ -150,19 +169,23 @@ Item {
 
         ListView {
             id: listView
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: rectangleAdd.bottom
-            anchors.bottom: rectangleSum.top
-            anchors.bottomMargin: 0
+            anchors {
+                left: parent.left;
+                right: parent.right;
+                top: rectangleAdd.bottom;
+                bottom: rectangleSum.top;
+                leftMargin: 0;
+                rightMargin: 0;
+                topMargin: 0;
+                bottomMargin: 0
+            }
             clip: true
-            anchors.topMargin: 0
 
             header: Rectangle {
                 id: header
                 width: listView.width
                 height: 40
-                color: "#00000000"
+                color: "transparent"
 
                 Row {
                     id: rowHeader
@@ -173,7 +196,7 @@ Item {
 
                     Text {
                         width: parent.width*0.3
-                        color: "#ffffff"
+                        color: "white"
                         text: "Account name"
                         anchors.verticalCenter: parent.verticalCenter
                         font.pointSize: 13
@@ -183,7 +206,7 @@ Item {
 
                     Text {
                         width: parent.width*0.15
-                        color: "#ffffff"
+                        color: "white"
                         text: "Amount"
                         anchors.verticalCenter: parent.verticalCenter
                         font.pointSize: 13
@@ -192,7 +215,7 @@ Item {
 
                     Text {
                         width: parent.width*0.1
-                        color: "#ffffff"
+                        color: "white"
                         text: "Currency"
                         anchors.verticalCenter: parent.verticalCenter
                         font.bold: true
@@ -211,7 +234,7 @@ Item {
                     id: topBorder
                     width: parent.width
                     height: 1
-                    color: "#c8c8c8"
+                    color: "darkgrey"
                 }
 
                 Row {
@@ -229,7 +252,7 @@ Item {
                     }
                     Text {
                         width: parent.width*0.3
-                        color: "#ffffff"
+                        color: "white"
                         text: name
                         anchors.verticalCenter: parent.verticalCenter
                         font.pointSize: 13
@@ -237,7 +260,7 @@ Item {
 
                     Text {
                         width: parent.width*0.15
-                        color: "#ffffff"
+                        color: "white"
                         text: amount
                         anchors.verticalCenter: parent.verticalCenter
                         font.pointSize: 13
@@ -246,7 +269,7 @@ Item {
 
                     Text {
                         width: parent.width*0.1
-                        color: "#ffffff"
+                        color: "white"
                         text: currency
                         anchors.verticalCenter: parent.verticalCenter
                         font.bold: true
@@ -295,9 +318,15 @@ Item {
             id: rectangleEdit
             height: 70
             visible: false
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: rectangleSum.top
+            anchors {
+                left: parent.left;
+                right: parent.right;
+                bottom: rectangleSum.top;
+                leftMargin: 0;
+                rightMargin: 0;
+                bottomMargin: 0
+            }
+
             gradient: Gradient {
                 GradientStop {
                     position: 0
@@ -309,29 +338,32 @@ Item {
                     color: "#8a8a8a"
                 }
             }
-            anchors.rightMargin: 0
-            anchors.leftMargin: 0
-            anchors.bottomMargin: 0
+
 
             Rectangle {
                 id: rectangleEditLabel
                 height: 20
-                color: "#00000000"
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.topMargin: 0
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
+                color: "transparent"
+                anchors {
+                    left: parent.left;
+                    right: parent.right;
+                    top: parent.top;
+                    leftMargin: 0;
+                    rightMargin: 0;
+                    topMargin: 0
+                }
 
                 Text {
                     id: textEditLabel
                     text: qsTr("Edit account data:")
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
+                    anchors {
+                        verticalCenter: parent.verticalCenter;
+                        verticalCenterOffset: 2;
+                        left: parent.left;
+                        leftMargin: 8
+                    }
                     font.pixelSize: 15
-                    anchors.verticalCenterOffset: 2
-                    anchors.leftMargin: 8
+
                 }
 
                 Button {
@@ -339,9 +371,12 @@ Item {
                     width: 100
                     height: 20
                     text: qsTr("Close")
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 8
+                    anchors {
+                        verticalCenter: parent.verticalCenter;
+                        right: parent.right;
+                        rightMargin: 8
+                    }
+
                     onClicked: {
                         rectangleEdit.visible = false
                     }
@@ -351,12 +386,17 @@ Item {
             Rectangle {
                 id: rectangleEditValues
                 height: 50
-                color: "#00000000"
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: rectangleEditLabel.bottom
-                anchors.bottom: parent.bottom
-                anchors.topMargin: 0
+                color: "transparent"
+                anchors {
+                    left: parent.left;
+                    right: parent.right;
+                    top: rectangleEditLabel.bottom;
+                    bottom: parent.bottom;
+                    bottomMargin: 0;
+                    leftMargin: 0;
+                    rightMargin: 0;
+                    topMargin: 0
+                }
 
                 Text {
                     id: textEditIndex
@@ -372,47 +412,61 @@ Item {
 
                 TextField {
                     id: textEditName
-                    x: 8
-                    y: 5
                     width: parent.width*0.3
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
+                    anchors {
+                        verticalCenter: parent.verticalCenter;
+                        left: parent.left;
+                        leftMargin: 8
+                    }
                     horizontalAlignment: Text.AlignLeft
-                    anchors.leftMargin: 8
                     placeholderText: qsTr("Account name")
                 }
 
-                TextField {
-                    id: textEditAmount
-                    x: 216
-                    y: 5
+                SpinBox {
+                    id: spinboxEditAmount
                     width: parent.width*0.3
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: textEditName.right
-                    anchors.verticalCenterOffset: 0
-                    anchors.leftMargin: 16
-                    placeholderText: qsTr("Amount")
-                    inputMethodHints: Qt.ImhHiddenText
+                    anchors {
+                        verticalCenter: parent.verticalCenter;
+                        left: textEditName.right;
+                        verticalCenterOffset: 0;
+                        leftMargin: 16
+                    }
+                    editable: true
+                    from: -999999999
+                    to: 999999999
+                    stepSize: 10000
+
+                    property int decimals: 2
+
+                    textFromValue: function(value, locale) {
+                        return Number(value / 100).toLocaleString(locale, 'f', spinboxValue.decimals)
+                    }
+
+                    valueFromText: function(text, locale) {
+                        return Number.fromLocaleString(locale, text) * 100
+                    }
                 }
 
                 ComboBox {
                     id: comboBoxEditCurrency
-                    x: 424
-                    y: 12
                     width: parent.width*0.15
                     height: 30
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: textEditAmount.right
-                    anchors.leftMargin: 16
-                    model: ["hrk", "eur", "gbp"]
+                    anchors {
+                        verticalCenter: parent.verticalCenter;
+                        left: spinboxEditAmount.right;
+                        leftMargin: 16
+                    }
+                    model: ["HRK", "EUR", "GBP"]
                 }
 
                 Button {
                     id: btnConfirm
                     text: qsTr("Confirm")
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 8
+                    anchors {
+                        verticalCenter: parent.verticalCenter;
+                        right: parent.right;
+                        rightMargin: 8
+                    }
                     onClicked: {
                         editAccount()
                     }
@@ -425,9 +479,15 @@ Item {
             id: rectangleSum
             width: parent.width
             height: 50
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
+            anchors {
+                left: parent.left;
+                right: parent.right;
+                bottom: parent.bottom;
+                bottomMargin: 0;
+                leftMargin: 0;
+                rightMargin: 0
+            }
+
             gradient: Gradient {
                 GradientStop {
                     position: 0
@@ -439,39 +499,40 @@ Item {
                     color: "#059d8e"
                 }
             }
-            anchors.leftMargin: 0
-            anchors.rightMargin: 0
-            anchors.bottomMargin: 0
 
 
             Text {
                 id: textSumLabel
                 text: qsTr("Total:")
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: parent.left
+                anchors {
+                    verticalCenter: parent.verticalCenter;
+                    left: parent.left;
+                    leftMargin: 20
+                }
                 font.pixelSize: 20
-                anchors.leftMargin: 20
             }
 
             Text {
                 id: textSumValue
-                color: "#ffffff"
+                color: "white"
                 text: qsTr("Value")
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.right: comboBoxSumCurrency.left
+                anchors {
+                    verticalCenter: parent.verticalCenter;
+                    right: comboBoxSumCurrency.left;
+                    rightMargin: 20
+                }
                 font.pixelSize: 20
-                anchors.rightMargin: 20
             }
             ComboBox {
                 id: comboBoxSumCurrency
-                x: 424
-                y: 17
                 width: parent.width*0.15
                 height: 25
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.right: parent.right
-                anchors.rightMargin: 20
-                model: ["hrk", "eur", "gbp"]
+                anchors {
+                    verticalCenter: parent.verticalCenter;
+                    right: parent.right
+                    rightMargin: 20
+                }
+                model: ["HRK", "EUR", "GBP"]
 
                 onCurrentTextChanged: changeCurrency(currentText)
 
@@ -482,48 +543,48 @@ Item {
     }
 
     function calculateSum(){
-        var hrkSum = 0
+        var HRKSum = 0
         for (var i = 0; i < listModel.rowCount(); i ++) {
             var rowElement = listModel.get(i)
 
-            if (rowElement.currency === "eur"){
-                hrkSum += rowElement.amount * 7.49
-            } else if (rowElement.currency === "gbp"){
-                hrkSum += rowElement.amount * 8.75
+            if (rowElement.currency === "EUR"){
+                HRKSum += rowElement.amount * 7.49
+            } else if (rowElement.currency === "GBP"){
+                HRKSum += rowElement.amount * 8.75
             } else {
-                hrkSum += rowElement.amount
+                HRKSum += rowElement.amount
             }
         }
 
-        return hrkSum
+        return HRKSum
     }
 
     function setTotalValue(){
-        var hrkSum = calculateSum()
+        var HRKSum = calculateSum()
         switch(comboBoxSumCurrency.displayText){
-        case "hrk":
-            textSumValue.text = hrkSum.toFixed(2)
+        case "HRK":
+            textSumValue.text = HRKSum.toFixed(2)
             break
-        case "eur":
-            textSumValue.text = (hrkSum/7.49).toFixed(2)
+        case "EUR":
+            textSumValue.text = (HRKSum/7.49).toFixed(2)
             break
-        case "gbp":
-            textSumValue.text = (hrkSum/8.75).toFixed(2)
+        case "GBP":
+            textSumValue.text = (HRKSum/8.75).toFixed(2)
             break
         }
     }
 
     function changeCurrency(newCurrency){
-        var hrkSum = calculateSum()
+        var HRKSum = calculateSum()
         switch(newCurrency){
-        case "hrk":
-            textSumValue.text = hrkSum.toFixed(2)
+        case "HRK":
+            textSumValue.text = HRKSum.toFixed(2)
             break
-        case "eur":
-            textSumValue.text = (hrkSum/7.49).toFixed(2)
+        case "EUR":
+            textSumValue.text = (HRKSum/7.49).toFixed(2)
             break
-        case "gbp":
-            textSumValue.text = (hrkSum/8.75).toFixed(2)
+        case "GBP":
+            textSumValue.text = (HRKSum/8.75).toFixed(2)
             break
         }
     }
@@ -574,7 +635,7 @@ Item {
         textEditIndex.text = index
         textEditID.text = listModel.get(index).accountID
         textEditName.text = listModel.get(index).name
-        textEditAmount.text = listModel.get(index).amount
+        spinboxEditAmount.value = listModel.get(index).amount*100
         comboBoxCurrency.displayText = listModel.get(index).currency
 
         rectangleEdit.visible = true
@@ -584,12 +645,8 @@ Item {
         var index = textEditIndex.text
         var id = textEditID.text
         var newName = textEditName.text
-        var newAmount = textEditAmount.text
+        var newAmount = spinboxEditAmount.value/100
         var newCurrency = comboBoxEditCurrency.displayText
-
-        if(isNaN(newAmount)){
-            return
-        }
 
         // update ListModel
         listModel.set(index, { name: newName, amount: parseFloat(newAmount), currency: newCurrency})
@@ -609,8 +666,8 @@ Item {
 
     function clearTextFields(){
         textAccount.text = ""
-        textValue.text = ""
-        comboBoxCurrency.displayText = "hrk"
+        spinboxValue.value = 0
+        comboBoxCurrency.displayText = "HRK"
     }
 }
 
