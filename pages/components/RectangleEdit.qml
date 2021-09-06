@@ -1,6 +1,8 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.15
 import QtQuick.LocalStorage 2.15
+import "../js/database.js" as Database
+import "../js/utils.js" as Utils
 
 Rectangle {
     id: rectangleEdit
@@ -32,6 +34,8 @@ Rectangle {
     property TextField textEditName: textEditName
     property SpinBox spinboxEditAmount: spinboxEditAmount
     property ComboBox comboBoxEditCurrency: comboBoxEditCurrency
+
+    property alias btnConfirm: btnConfirm
 
     Rectangle {
         id: rectangleEditLabel
@@ -157,9 +161,6 @@ Rectangle {
                 verticalCenter: parent.verticalCenter;
                 right: parent.right;
                 rightMargin: 8
-            }
-            onClicked: {
-                editAccount()
             }
         }
     }

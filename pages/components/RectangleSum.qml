@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.15
 import QtQuick.LocalStorage 2.15
+import "../js/utils.js" as Utils
 
 Rectangle {
     id: rectangleSum
@@ -27,7 +28,7 @@ Rectangle {
     }
 
     property Text textSumValue: textSumValue
-    property ComboBox comboBoxSumCurrency: comboBoxSumCurrency
+    property alias comboBoxSumCurrency: comboBoxSumCurrency
     property alias textSumLabel: textSumLabel
 
     Text {
@@ -63,8 +64,5 @@ Rectangle {
             rightMargin: 20
         }
         model: ["HRK", "EUR", "GBP"]
-
-        onCurrentTextChanged: changeCurrency(currentText)
-
     }
 }
